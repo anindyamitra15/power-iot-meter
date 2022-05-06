@@ -7,11 +7,8 @@
 void setup()
 {
   Serial.begin(115200);
-  initFileSystem();
-  
+  initFlashFileSystem(SPIFFS);
   listDir(SPIFFS);
-  writeFile(SPIFFS, "/lastlog.json", "");
-  readFile(SPIFFS, "/lastlog.json");
   SPIFFS.end();
 }
 

@@ -6,11 +6,11 @@
    https://github.com/me-no-dev/arduino-esp32fs-plugin */
 #define FORMAT_SPIFFS_IF_FAILED true
 
-void initFileSystem()
+void initFlashFileSystem(fs::SPIFFSFS &fs)
 {
-    if (!SPIFFS.begin(FORMAT_SPIFFS_IF_FAILED))
+    if (!fs.begin(FORMAT_SPIFFS_IF_FAILED))
     {
-        Serial.println("An Error has occurred while mounting SPIFFS");
+        Serial.println(F("An Error has occurred while mounting SPIFFS"));
         while (1)
             ;
     }
