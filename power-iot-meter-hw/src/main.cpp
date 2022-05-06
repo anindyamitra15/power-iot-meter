@@ -1,9 +1,20 @@
 #include <Arduino.h>
+#include <SPI.h>
+#include <SPIFFS.h>
+#include "fileOperation.h"
 
-void setup() {
-  // put your setup code here, to run once:
+
+void setup()
+{
+  Serial.begin(115200);
+  initFileSystem();
+  
+  listDir(SPIFFS);
+  writeFile(SPIFFS, "/lastlog.json", "");
+  readFile(SPIFFS, "/lastlog.json");
+  SPIFFS.end();
 }
 
-void loop() {
-  // put your main code here, to run repeatedly:
+void loop()
+{
 }
