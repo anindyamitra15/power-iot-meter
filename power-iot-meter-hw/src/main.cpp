@@ -42,10 +42,10 @@ void setup()
           {
             if (!n)
             {
-              req->send(200, "text/plain", n + " network(s) found");
+              // req->send(200, "text/plain", n + " network(s) found");
+              req->send(200, "text/html", scanResults);
+              to_scan = true;
             }
-            req->send(200, "text/html", scanResults);
-            to_scan = true;
           });
 
   server.begin();
