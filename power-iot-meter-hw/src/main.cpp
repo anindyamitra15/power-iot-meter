@@ -43,7 +43,7 @@ void setup()
             if (!n)
             {
               // req->send(200, "text/plain", n + " network(s) found");
-              req->send(200, "text/html", scanResults);
+              req->send(200, "text/html", String(n) + " network(s) found <br><br>" + scanResults);
               to_scan = true;
             }
           });
