@@ -9,23 +9,27 @@
       src="jquery-3.6.0.min.js"
     ></script>
     <script src="script.js" defer></script>
+    <script>
+      $(document).ready(function(){
+        $("button").click(function(){
+          $('#ap-list').load("http://192.168.0.109/scan");  //
+        });
+      });
+    </script>
     <title>WiFi Manager</title>
   </head>
   <body>
     <div class="head"><h1>Power Meter WiFi Setup</h1></div>
     <div class="scan">
-      <button type="button" onclick="scanAps()">
-          Scan networks:
-      </button>
-      <ul id="scan">
+      <button type="button">Scan networks</button>
+      <!-- <ul id="scan">
         <li>one</li>
         <li>two</li>
-      </ul>
+      </ul> -->
+      <div id="ap-list"></div>
     </div>
     <div class="form">
-      <caption>
         Enter Credentials:
-      </caption>
       <form action="/" method="POST">
         <label for="ssid">SSID:&nbsp;</label>
         <input type="text" id="ssid" name="ssid" /><br />

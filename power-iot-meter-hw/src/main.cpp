@@ -18,7 +18,7 @@ void setup()
   initFlashFileSystem(SPIFFS);
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin("AKM_MACHINE_ULTRA", "zaq12wsx");
+  WiFi.begin("Y-Fi", "connectionerror");
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.println('.');
@@ -44,7 +44,8 @@ void setup()
             {
               req->send(200, "text/plain", n + " network(s) found");
             }
-            req->send(200, "text/plain", scanResults);
+            req->send(200, "text/html", scanResults);
+            to_scan = true;
           });
 
   server.begin();
@@ -74,7 +75,7 @@ void loop()
       scanResults += WiFi.RSSI(i);
       scanResults += " ";
       scanResults += (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
-      scanResults += "\n";
+      scanResults += "<br>";
     }
     to_scan = false;
   }
