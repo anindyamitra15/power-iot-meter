@@ -45,6 +45,7 @@ void setup()
               req->send(200, "text/plain", n + " network(s) found");
             }
             req->send(200, "text/plain", scanResults);
+            to_scan = true;
           });
 
   server.begin();
@@ -62,20 +63,18 @@ void loop()
       return;
     }
     scanResults.clear();
-
+    DynamicJsonDocument doc(1024);
+    JsonArray aps = doc.to<JsonArray>();
     for (int i = 0; i < n; ++i)
     {
       // Print SSID and RSSI for each network found
-      scanResults += String(i + 1);
-      scanResults += " ";
-      // Serial.print(": ");
-      scanResults += WiFi.SSID(i);
-      scanResults += " ";
-      scanResults += WiFi.RSSI(i);
-      scanResults += " ";
-      scanResults += (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
-      scanResults += "\n";
+      JsonObject ap = aps.createNestedObject();
+      ap["id"] = i+1;
+      ap["ssid"]= WiFi.SSID(i);
+      ap["rssi"]= WiFi.RSSI(i);
+      ap["enc"]= (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
     }
+    serializeJson(aps, scanResults);
     to_scan = false;
   }
 }

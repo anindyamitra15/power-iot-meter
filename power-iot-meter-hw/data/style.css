@@ -1,31 +1,46 @@
 html {
-    font-family:monospace
+  font-family: monospace;
 }
 .head {
-    text-align: center;
+  text-align: center;
 }
 
-.form, .scan {
-    padding: 15px;
-    width: 60%;
-    margin: auto;
+.form,
+.scan {
+  padding: 15px;
+  width: 60%;
+  margin: auto;
 }
 
 form {
-    text-align: center;
+  text-align: center;
 }
 
-
-form input {
-    margin-top: 20px;
-    background-color: inherit;
-    border: none;
-    border-bottom: 2px solid black;
-    padding: 0.5% 2% 0.5% 2% ;
+input,
+button {
+  margin-top: 20px;
+  background-color: inherit;
+  border: none;
+  border-bottom: 2px solid black;
+  padding: 1% 2% 0.5% 2%;
+  border-radius: 5px 5px 0 0;
 }
 
-form input:focus {
-    border-radius: 5px 5px 0 0;
-    background-color: #b9b9b9;
+input:focus,
+button:focus {
+  background-color: #b9b9b9;
+}
 
+input:hover,
+button:hover {
+  background-color: #efefef;
+}
+
+table td {
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+table td:hover, table td:focus {
+    background-color: #efefef;
 }

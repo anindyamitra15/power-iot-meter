@@ -13,14 +13,11 @@
   </head>
   <body>
     <div class="head"><h1>Power Meter WiFi Setup</h1></div>
-    <div class="scan">
+    <div class="scan" id="scan">
       <button type="button" onclick="scanAps()">
           Scan networks:
       </button>
-      <ul id="scan">
-        <li>one</li>
-        <li>two</li>
-      </ul>
+      <table id="scans"></table>
     </div>
     <div class="form">
       <caption>
@@ -29,7 +26,7 @@
       <form action="/" method="POST">
         <label for="ssid">SSID:&nbsp;</label>
         <input type="text" id="ssid" name="ssid" /><br />
-        <label for="pass">PASSSWORD:&nbsp;</label>
+        <label for="pass">PASS:&nbsp;</label>
         <input type="password" id="pass" name="pass" /><br />
         <input type="submit" value="Confirm" />
       </form>
