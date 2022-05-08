@@ -9,6 +9,13 @@
       src="jquery-3.6.0.min.js"
     ></script>
     <script src="script.js" defer></script>
+    <script>
+      $(document).ready(function(){
+        $("button").click(function(){
+          $('#ap-list').load("/scan");  //
+        });
+      });
+    </script>
     <title>WiFi Manager</title>
   </head>
   <body>
@@ -20,9 +27,7 @@
       <table id="scans"></table>
     </div>
     <div class="form">
-      <caption>
         Enter Credentials:
-      </caption>
       <form action="/" method="POST">
         <label for="ssid">SSID:&nbsp;</label>
         <input type="text" id="ssid" name="ssid" /><br />

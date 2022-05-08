@@ -18,7 +18,7 @@ void setup()
   initFlashFileSystem(SPIFFS);
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin("AKM_MACHINE_ULTRA", "zaq12wsx");
+  WiFi.begin("Y-Fi", "connectionerror");
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.println('.');
@@ -42,10 +42,15 @@ void setup()
           {
             if (!n)
             {
-              req->send(200, "text/plain", n + " network(s) found");
+              // req->send(200, "text/plain", n + " network(s) found");
+              req->send(200, "text/html", String(n) + " network(s) found <br><br>" + scanResults);
+              to_scan = true;
             }
+<<<<<<< HEAD
             req->send(200, "text/plain", scanResults);
             to_scan = true;
+=======
+>>>>>>> edafa413d610de0acf92854d8fdac6c0d1ac8e51
           });
 
   server.begin();
