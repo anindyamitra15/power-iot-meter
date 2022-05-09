@@ -18,7 +18,7 @@ void setup()
   initFlashFileSystem(SPIFFS);
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin("Y-Fi", "connectionerror");
+  WiFi.begin("AKM_MACHINE_ULTRA", "zaq12wsx");
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.println('.');
@@ -46,11 +46,37 @@ void setup()
               req->send(200, "text/html", String(n) + " network(s) found <br><br>" + scanResults);
               to_scan = true;
             }
-<<<<<<< HEAD
             req->send(200, "text/plain", scanResults);
             to_scan = true;
-=======
->>>>>>> edafa413d610de0acf92854d8fdac6c0d1ac8e51
+          });
+
+  server
+      .on("/save",
+          HTTP_POST,
+          [](AsyncWebServerRequest *req)
+          {
+            int params = req->params();
+            String ssid, pass;
+            for (int i = 0; i < params; i++)
+            {
+              AsyncWebParameter *param = req->getParam(i);
+              if (param->isPost())
+              {
+                if (param->name() == String("ssid"))
+                {
+                  Serial.print("ssid: ");
+                  ssid = param->value();
+                  Serial.println(ssid);
+                }
+                if (param->name() == String("pass"))
+                {
+                  Serial.print("pass: ");
+                  pass = param->value();
+                  Serial.println(pass);
+                }
+              }
+            }
+            req->send(200, "text/html", "{\"ssid\":\"" + ssid + "\", \"pass\":\"" + pass + "\"}");
           });
 
   server.begin();
@@ -74,10 +100,10 @@ void loop()
     {
       // Print SSID and RSSI for each network found
       JsonObject ap = aps.createNestedObject();
-      ap["id"] = i+1;
-      ap["ssid"]= WiFi.SSID(i);
-      ap["rssi"]= WiFi.RSSI(i);
-      ap["enc"]= (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
+      ap["id"] = i + 1;
+      ap["ssid"] = WiFi.SSID(i);
+      ap["rssi"] = WiFi.RSSI(i);
+      ap["enc"] = (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
     }
     serializeJson(aps, scanResults);
     to_scan = false;
