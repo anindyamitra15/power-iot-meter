@@ -17,14 +17,9 @@ void setup()
   Serial.begin(115200);
   initFlashFileSystem(SPIFFS);
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin("AKM_MACHINE_ULTRA", "zaq12wsx");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    Serial.println('.');
-    delay(1000);
-  }
-  Serial.println(WiFi.localIP());
+  WiFi.mode(WIFI_AP);
+  WiFi.softAP("Power IoT Meter", "powermeter");
+  
   server.serveStatic("/", SPIFFS, "/");
   server
       .on(
@@ -76,6 +71,7 @@ void setup()
                 }
               }
             }
+
             req->send(200, "text/html", "{\"ssid\":\"" + ssid + "\", \"pass\":\"" + pass + "\"}");
           });
 
