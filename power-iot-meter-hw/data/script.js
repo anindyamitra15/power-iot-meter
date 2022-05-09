@@ -7,8 +7,8 @@ const scanAps = () => {
   $.ajax({
     url: "scan",
   }).done((data) => {
-    const nets = JSON.parse(data);
-    console.log(nets);
+    if(!data) return;
+    const nets = (typeof data == 'string')?JSON.parse(data):data;
     if (nets) {
       let table_body = `<tr><td>No.</td><td>SSID</td><td>RSSI</td><td>Secure</td></tr>`;
       nets.forEach((net) => {

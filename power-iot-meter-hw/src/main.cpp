@@ -71,8 +71,13 @@ void setup()
                 }
               }
             }
-
             req->send(200, "text/html", "{\"ssid\":\"" + ssid + "\", \"pass\":\"" + pass + "\"}");
+            WiFi.softAPdisconnect();
+            WiFi.mode(WIFI_STA);
+            WiFi.begin(ssid.c_str(), pass.c_str());
+            WiFi.setAutoConnect(true);
+            WiFi.setAutoReconnect(true);
+            WiFi.persistent(true);
           });
 
   server.begin();
