@@ -5,9 +5,6 @@
 
 AsyncWebServer server(80);
 MinimalWifiManager wifi(&server, SPIFFS);
-bool to_scan;
-int n = 0;
-String scanResults;
 
 void setup()
 {

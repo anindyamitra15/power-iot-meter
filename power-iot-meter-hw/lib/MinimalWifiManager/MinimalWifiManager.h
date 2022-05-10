@@ -13,8 +13,8 @@
 #define AP_SSID "Power IoT Meter"
 #define AP_PASS "powermeter"
 
-#define SSID_PATH "/ssid.txt"
-#define PASS_PATH "/pass.txt"
+#define SSID_PATH "/ssid"
+#define PASS_PATH "/pass"
 
 class MinimalWifiManager
 {

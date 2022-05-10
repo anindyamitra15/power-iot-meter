@@ -21,6 +21,8 @@ public:
 
     static void listDir(fs::FS &fs, const char *dirname = "/", uint8_t levels = 0)
     {
+        if (!Serial)
+            return;
         Serial.printf("Listing directory: %s\r\n", dirname);
 
         File root = fs.open(dirname);
@@ -71,13 +73,14 @@ public:
             return String("");
         }
 
-        Serial.println(F("Reading file:"));
-        String acc;
-        while (file.available())
-        {
-            acc += file.readStringUntil('\n');
-        }
+        Serial.println(F("File contains:"));
+
+        if (!file.available())
+            return "";
+
+        String acc = file.readString();
         file.close();
+        Serial.println(acc);
         return acc;
     }
 
@@ -92,13 +95,9 @@ public:
             return;
         }
         if (file.print(message) || message.length() < 1)
-        {
             Serial.println(F("File written!"));
-        }
         else
-        {
             Serial.println(F("File write failed"));
-        }
         file.close();
     }
 
@@ -113,13 +112,9 @@ public:
             return;
         }
         if (file.print(message.c_str()))
-        {
             Serial.println(F("Update appended!"));
-        }
         else
-        {
             Serial.println(F("Appending failed"));
-        }
         file.close();
     }
 
@@ -127,26 +122,18 @@ public:
     {
         Serial.printf("Renaming file %s to %s\r\n", path1, path2);
         if (fs.rename(path1, path2))
-        {
             Serial.println(F("File renamed!"));
-        }
         else
-        {
             Serial.println(F("Renaming failed"));
-        }
     }
 
     static void deleteFile(fs::FS &fs, const char *path)
     {
         Serial.printf("Deleting file: %s\r\n", path);
         if (fs.remove(path))
-        {
             Serial.println(F("File deleted!"));
-        }
         else
-        {
             Serial.println(F("Deletion failed"));
-        }
     }
 };
 #endif
