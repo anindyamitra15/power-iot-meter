@@ -1,8 +1,53 @@
 #include "MinimalWifiManager.h"
 
-MinimalWifiManager::MinimalWifiManager(AsyncWebServer *serverObj)
+MinimalWifiManager::MinimalWifiManager(AsyncWebServer *serverObj, fs::SPIFFSFS &fs)
 {
     this->server = serverObj;
+    this->filesystem = fs; // FIXME: test this reference
+}
+
+String MinimalWifiManager::getSSID()
+{
+    return FileOperation::readFile(this->filesystem, SSID_PATH);
+}
+
+void MinimalWifiManager::setSSID(String ssid)
+{
+    this->_ssid = ssid;
+    FileOperation::writeFile(this->filesystem, SSID_PATH, ssid);
+}
+
+String MinimalWifiManager::getPassword()
+{
+    return FileOperation::readFile(this->filesystem, PASS_PATH);
+}
+
+void MinimalWifiManager::setPassword(String pass)
+{
+    this->_pass = pass;
+    FileOperation::writeFile(this->filesystem, PASS_PATH, pass);
+}
+
+bool MinimalWifiManager::autoConnect()
+{
+    /**
+     * @brief
+     * attempts connection
+     * checks failure
+     * if no connection details present
+     * check ssid.txt and pass.txt
+     * if wrong credential
+     * stop station mode
+     * start ap mode
+     * take credentisls, attempts to connect
+     * after successful connection save credential to ssid.txt and pass.txt
+     */
+    return false; // FIXME: introduce success flag
+}
+
+bool MinimalWifiManager::resetSettings()
+{
+    return false; // FIXME: introduce success flag
 }
 
 bool MinimalWifiManager::bindServer()
@@ -13,9 +58,9 @@ bool MinimalWifiManager::bindServer()
         ->on(
             "/",
             HTTP_GET,
-            [SPIFFS, this](AsyncWebServerRequest *req)
-            { this->to_scan = true;
-              req->send(SPIFFS, "/index.html", "text/html"); });
+            [this](AsyncWebServerRequest *req)
+            { this->_to_scan = true;
+              req->send(this->filesystem, "/index.html", "text/html"); });
 
     this->server
         ->on(
@@ -27,10 +72,10 @@ bool MinimalWifiManager::bindServer()
                 {
                     // req->send(200, "text/plain", n + " network(s) found");
                     req->send(200, "text/html", String(this->numberOfNetworks) + " network(s) found <br><br>" + scanResults);
-                    to_scan = true;
+                    _to_scan = true;
                 }
                 req->send(200, "text/plain", scanResults);
-                this->to_scan = true;
+                this->_to_scan = true;
             });
 
     this->server
@@ -47,23 +92,23 @@ bool MinimalWifiManager::bindServer()
                          if (param->name() == String("ssid"))
                          {
                              Serial.print("ssid: ");
-                             this->ssid = param->value();
-                             Serial.println(ssid);
+                             this->_ssid = param->value();
+                             Serial.println(_ssid);
                          }
                          if (param->name() == String("pass"))
                          {
                              Serial.print("pass: ");
-                             this->pass = param->value();
-                             Serial.println(pass);
+                             this->_pass = param->value();
+                             Serial.println(_pass);
                          }
                      }
                  }
-                 req->send(200, "text/html", "{\"ssid\":\"" + ssid + "\", \"pass\":\"" + pass + "\"}");
+                 req->send(200, "text/html", "{\"ssid\":\"" + _ssid + "\", \"pass\":\"" + _pass + "\"}");
                  this->setStationMode(true);
              });
 
     this->server->begin();
-    return false;
+    return false; // FIXME: introduce success flag
 }
 
 bool MinimalWifiManager::setApMode()
@@ -76,26 +121,27 @@ bool MinimalWifiManager::setApMode()
 
 bool MinimalWifiManager::setStationMode(bool disableAp = false)
 {
+    bool success = false;
     if (disableAp)
     {
-        WiFi.softAPdisconnect();
+        success &= WiFi.softAPdisconnect();
     }
     WiFi.mode(WIFI_STA);
-    if (this->ssid == "")
-        WiFi.enableSTA(true);
+    if (this->_ssid == "")
+        success &= WiFi.enableSTA(true);
     else
     {
-        WiFi.begin(this->ssid.c_str(), this->pass.c_str());
-        WiFi.setAutoConnect(true);
-        WiFi.setAutoReconnect(true);
-        WiFi.persistent(true);
+        WiFi.begin(this->_ssid.c_str(), this->_pass.c_str()); // FIXME: introduce success flagF
+        success &= WiFi.setAutoConnect(true);
+        success &= WiFi.setAutoReconnect(true);
+        WiFi.persistent(true); // FIXME: introduce success flag
     }
-    return false; // TODO: introduce success flag
+    return success;
 }
 
 void MinimalWifiManager::loop()
 {
-    if (this->to_scan)
+    if (this->_to_scan)
     {
         this->numberOfNetworks = WiFi.scanNetworks();
         if (!this->numberOfNetworks)
@@ -115,6 +161,6 @@ void MinimalWifiManager::loop()
             ap["enc"] = (WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? " " : "*";
         }
         serializeJson(aps, this->scanResults);
-        this->to_scan = false;
+        this->_to_scan = false;
     }
 }
