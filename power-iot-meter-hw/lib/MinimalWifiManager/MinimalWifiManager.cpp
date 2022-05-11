@@ -3,7 +3,13 @@
 MinimalWifiManager::MinimalWifiManager(AsyncWebServer *serverObj, fs::SPIFFSFS &fs)
 {
     this->server = serverObj;
-    this->filesystem = fs; // FIXME: test this reference
+    this->filesystem = fs;
+}
+
+MinimalWifiManager::~MinimalWifiManager()
+{
+    this->server->end();
+    this->filesystem.end();
 }
 
 String MinimalWifiManager::getSSID()
@@ -32,27 +38,55 @@ bool MinimalWifiManager::autoConnect()
 {
     /**
      * @brief
-     * attempts connection
-     * checks failure
-     * if no connection details present
-     * check ssid.txt and pass.txt
-     * if wrong credential
+     * attempts connection - done
+     * checks failure - done
+     * if no connection details present - done
+     * check ssid.txt and pass.txt - done
+     * if wrong credential - done
      * stop station mode
      * start ap mode
      * take credentisls, attempts to connect
      * after successful connection save credential to ssid.txt and pass.txt
      */
-    return false; // FIXME: introduce success flag
+    Serial.println("Sic mundus");
+    if (this->connectToStation(false))
+    {
+        Serial.println("Connection successful");
+        return true;
+    }
+    Serial.println("Connection failed, creating AP");
+    bool success = true;
+    // this part executes if connection fails
+    success &= WiFi.disconnect();
+    success &= this->setApMode();
+    this->bindServer();
+    while (!this->_saved)
+    {// busy-wait loop for synchronous approach
+        this->loop();
+    }
+    success &= this->connectToStation(true);
+    Serial.print("connected to: ");
+    if(WiFi.status() == WL_CONNECTED);
+        Serial.println(WiFi.localIP());
+    return success;
 }
 
 bool MinimalWifiManager::resetSettings()
 {
+    WiFi.disconnect();
+    WiFi.persistent(false);
+    this->_ssid.clear();
+    this->_pass.clear();
+    this->setSSID(this->_ssid);
+    this->setPassword(this->_pass);
+    this->_saved = false;
+    Serial.println("Successfully erased configs!");
     return false; // FIXME: introduce success flag
 }
 
 bool MinimalWifiManager::bindServer()
 {
-
+    Serial.println("Binding server on \"/\", \"/scan\", \"/save\" routes");
     this->server->serveStatic("/", SPIFFS, "/");
     this->server
         ->on(
@@ -103,8 +137,10 @@ bool MinimalWifiManager::bindServer()
                          }
                      }
                  }
-                 req->send(200, "text/html", "{\"ssid\":\"" + _ssid + "\", \"pass\":\"" + _pass + "\"}");
-                 this->setStationMode(true);
+                 req->send(200, "text/html", "{\"ssid\":\"" + _ssid + "\", \"pass\":\"" + _pass + "\"}"); // FIXME: create proper user-friendly html response
+                 this->setSSID(_ssid);
+                 this->setPassword(_pass);
+                 this->_saved = true;
              });
 
     this->server->begin();
@@ -119,24 +155,42 @@ bool MinimalWifiManager::setApMode()
     return success;
 }
 
-bool MinimalWifiManager::setStationMode(bool disableAp = false)
+bool MinimalWifiManager::connectToStation(bool disableAp = false)
 {
-    bool success = false;
+    bool success = true;
     if (disableAp)
     {
         success &= WiFi.softAPdisconnect();
     }
-    WiFi.mode(WIFI_STA);
-    if (this->_ssid == "")
-        success &= WiFi.enableSTA(true);
-    else
-    {
-        WiFi.begin(this->_ssid.c_str(), this->_pass.c_str()); // FIXME: introduce success flagF
-        success &= WiFi.setAutoConnect(true);
-        success &= WiFi.setAutoReconnect(true);
-        WiFi.persistent(true); // FIXME: introduce success flag
+    // take credentials from saved files
+    if (this->_ssid == "") // variables not set
+    {                      // fetch variables from files
+        this->_ssid = this->getSSID();
+        this->_pass = this->getPassword();
     }
-    return success;
+    if (this->_ssid == "") // if ssid is unset
+    {
+        return false;
+    }
+    success &= WiFi.mode(WIFI_STA);
+    success &= WiFi.begin(this->_ssid.c_str(), this->_pass.c_str());
+    int attempts = 0;
+    while ( attempts < _MAX_ATTEMPTS && WiFi.status() != WL_CONNECTED)
+    {
+        attempts++;
+        Serial.print("attempt: ");
+        Serial.println(attempts);
+        delay(1000);
+    }
+    if (attempts >= _MAX_ATTEMPTS && WiFi.status() != WL_CONNECTED) // wrong credentials or wifi not present
+    {
+        Serial.println("Attempts exceeded");
+        return false;
+    }
+    success &= WiFi.setAutoConnect(true);
+    success &= WiFi.setAutoReconnect(true);
+    WiFi.persistent(true); // FIXME: introduce success flag
+    return true;
 }
 
 void MinimalWifiManager::loop()
@@ -163,4 +217,9 @@ void MinimalWifiManager::loop()
         serializeJson(aps, this->scanResults);
         this->_to_scan = false;
     }
+}
+
+void MinimalWifiManager::begin()
+{
+    FileOperation::initFlashFileSystem(this->filesystem);
 }
