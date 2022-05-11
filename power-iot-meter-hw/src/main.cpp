@@ -4,21 +4,20 @@
 #include <MinimalWifiManager.h>
 
 AsyncWebServer server(80);
-
+MinimalWifiManager wifi(&server, SPIFFS);
 
 void setup()
 {
   Serial.begin(115200);
   Serial.println("setup");
-  MinimalWifiManager wifi(&server, SPIFFS);
   wifi.begin();
   wifi.resetSettings();
   wifi.autoConnect();
   Serial.println("Exiting setup()..");
-  // listDir(SPIFFS);
+  FileOperation::listDir(SPIFFS);
 }
 
 void loop()
 {
-  // wifi.loop();
+  wifi.loop();
 }
