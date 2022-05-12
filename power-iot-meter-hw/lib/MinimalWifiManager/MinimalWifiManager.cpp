@@ -1,11 +1,5 @@
 #include "MinimalWifiManager.h"
 
-MinimalWifiManager::MinimalWifiManager(AsyncWebServer *serverObj, fs::SPIFFSFS &fs)
-{
-    this->server = serverObj;
-    this->filesystem = fs;
-}
-
 MinimalWifiManager::~MinimalWifiManager()
 {
     this->server->end();
@@ -48,26 +42,27 @@ bool MinimalWifiManager::autoConnect()
      * take credentisls, attempts to connect
      * after successful connection save credential to ssid.txt and pass.txt
      */
-    Serial.println("Sic mundus");
+    Serial.println("Attempting connection.");
     if (this->connectToStation(false))
     {
-        Serial.println("Connection successful");
+        Serial.println("Connection successful!");
         return true;
     }
-    Serial.println("Connection failed, creating AP");
+    Serial.println("Connection failed, creating AP..");
     bool success = true;
     // this part executes if connection fails
     success &= WiFi.disconnect();
     success &= this->setApMode();
     this->bindServer();
     while (!this->_saved)
-    {// busy-wait loop for synchronous approach
+    { // busy-wait loop for synchronous approach
         this->loop();
     }
     success &= this->connectToStation(true);
-    Serial.print("connected to: ");
-    if(WiFi.status() == WL_CONNECTED);
-        Serial.println(WiFi.localIP());
+    Serial.print("Connected to: ");
+    if (WiFi.status() == WL_CONNECTED)
+        ;
+    Serial.println(WiFi.localIP());
     return success;
 }
 
@@ -175,7 +170,7 @@ bool MinimalWifiManager::connectToStation(bool disableAp = false)
     success &= WiFi.mode(WIFI_STA);
     success &= WiFi.begin(this->_ssid.c_str(), this->_pass.c_str());
     int attempts = 0;
-    while ( attempts < _MAX_ATTEMPTS && WiFi.status() != WL_CONNECTED)
+    while (attempts < _MAX_ATTEMPTS && WiFi.status() != WL_CONNECTED)
     {
         attempts++;
         Serial.print("attempt: ");
@@ -184,12 +179,12 @@ bool MinimalWifiManager::connectToStation(bool disableAp = false)
     }
     if (attempts >= _MAX_ATTEMPTS && WiFi.status() != WL_CONNECTED) // wrong credentials or wifi not present
     {
-        Serial.println("Attempts exceeded");
+        Serial.println("Attempts exceeded..");
         return false;
     }
     success &= WiFi.setAutoConnect(true);
     success &= WiFi.setAutoReconnect(true);
-    WiFi.persistent(true); // FIXME: introduce success flag
+    WiFi.persistent(true);
     return true;
 }
 
@@ -219,7 +214,9 @@ void MinimalWifiManager::loop()
     }
 }
 
-void MinimalWifiManager::begin()
+void MinimalWifiManager::begin(AsyncWebServer *serverObj, fs::SPIFFSFS &fs)
 {
+    this->server = serverObj;
+    this->filesystem = fs;
     FileOperation::initFlashFileSystem(this->filesystem);
 }

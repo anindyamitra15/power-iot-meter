@@ -32,14 +32,13 @@ class MinimalWifiManager
     void setPassword(String pass);
 
 public:
-    MinimalWifiManager(AsyncWebServer *serverObj, fs::SPIFFSFS &fs);
     ~MinimalWifiManager();
     bool autoConnect();
     String getSSID();
     String getPassword();
     bool resetSettings();
     void loop();
-    void begin();
+    void begin(AsyncWebServer *serverObj, fs::SPIFFSFS &fs);
 };
 
 #endif
