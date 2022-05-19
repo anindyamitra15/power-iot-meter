@@ -10,7 +10,7 @@
 #define DB_URL F("power-iot-meter-default-rtdb.asia-southeast1.firebasedatabase.app")
 #define EMAIL_DOM "@gmail.com"
 #define CONTROL_TOPIC "controls"
-#define UPDATE_DURATION 10000U// ms
+#define UPDATE_DURATION 10000U // ms
 
 class FirebaseHandler
 {
@@ -28,7 +28,7 @@ class FirebaseHandler
         __auth.user.password = chipId;
     }
 
-    bool authenticate()
+    bool signUp()
     {
         return Firebase.signUp(
             &__config,
@@ -37,6 +37,27 @@ class FirebaseHandler
             __auth.user.password);
     }
 
+    bool stream_http_status()
+    {
+        return this->__stream.httpConnected();
+    }
+
+    int stream_http_code()
+    {
+        return this->__stream.httpCode();
+    }
+
+    String stream_error_reason()
+    {
+        return this->__stream.errorReason();
+    }
+
+    /**
+     * @brief
+     * this separate function will encapsulate repeating code later on during refactoring
+     * @return true on success
+     * @return false on failure
+     */
     bool connect_firebase()
     {
         if (!__first_init)
@@ -59,7 +80,7 @@ class FirebaseHandler
             return true;
 
         Serial.println(F("Not present in database, signing up"));
-        if (this->authenticate())
+        if (this->signUp())
         {
             Serial.println(__auth.token.uid.c_str());
             Firebase.begin(&__config, &__auth);
@@ -71,8 +92,7 @@ class FirebaseHandler
     }
 
 public:
-    String chipId = "";
-
+    String chipId;
     bool isConnected;
 
     bool firebase_connect()
@@ -86,28 +106,13 @@ public:
         FirebaseData::StreamTimeoutCallback streamTimeoutCallback)
     {
         __stream.setResponseSize(2048);
-        if (!Firebase.RTDB.beginStream(&__stream, CONTROL_TOPIC)) // FIXME: add topic
+        if (!Firebase.RTDB.beginStream(&__stream, CONTROL_TOPIC))
         {
             Serial.printf("sream begin error, %s\n\n", __stream.errorReason().c_str());
             delay(5000);
         }
         Serial.println(F("Listening"));
         Firebase.RTDB.setStreamCallback(&__stream, streamCallback, streamTimeoutCallback);
-    }
-
-    bool stream_http_status()
-    {
-        return this->__stream.httpConnected();
-    }
-
-    int stream_http_code()
-    {
-        return this->__stream.httpCode();
-    }
-
-    String stream_error_reason()
-    {
-        return this->__stream.errorReason();
     }
 
     void firebase_loop()
@@ -118,11 +123,21 @@ public:
             connect_firebase();
         }
 
-        if(millis() - __last > UPDATE_DURATION)
+        if (millis() - __last > UPDATE_DURATION)
         {
-            //TODO: updae packet from here
+            // TODO: updae packet from here
             __last = millis();
         }
+    }
+
+    String fetchData(String topic)
+    {
+        return Firebase.RTDB.getJSON<String>(&__stream, topic) ? __stream.to<FirebaseJson>().raw() : __stream.errorReason().c_str();
+    }
+
+    bool updateData(String topic, FirebaseJson *jsonObj)
+    {
+        return Firebase.RTDB.setJSON(&__stream, topic, jsonObj);;
     }
 };
 FirebaseHandler firebaseHandler;
