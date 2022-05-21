@@ -98,7 +98,7 @@ public:
     String chipId;
     bool isConnected;
 
-    FirebaseHandler (fs::SPIFFSFS &filesystem)
+    void begin(fs::SPIFFSFS &filesystem)
     {
         this->filesystem = filesystem;
     }
@@ -110,7 +110,7 @@ public:
         uid.trim();
         String prevUid = FileOperation::readFile(this->filesystem, UID_PATH);
         prevUid.trim();
-        
+
         if (prevUid != uid) // if doesn't match
         {
             // uid update
@@ -150,13 +150,12 @@ public:
 
     String fetchData(String topic)
     {
-        return Firebase.RTDB.getJSON<String>(&__stream, topic) ? __stream.to<FirebaseJson>().raw() : __stream.errorReason().c_str();
+        return Firebase.RTDB.getString<String>(&__stream, topic) ? __stream.to<String>() : __stream.errorReason().c_str();//changes from getJSON and <FirebaseJson>
     }
 
     bool updateData(String topic, FirebaseJson *jsonObj)
     {
         return Firebase.RTDB.setJSON(&__stream, topic, jsonObj);
-        ;
     }
 
     String getUid()
