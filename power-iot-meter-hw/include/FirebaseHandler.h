@@ -5,12 +5,14 @@
 #include <addons/TokenHelper.h>
 #include <addons/RTDBHelper.h>
 #include <util.h>
+#include "FileOperation.h"
 
 #define API F("AIzaSyA2ZWrZjc6WUU3f4L5bRcnbwtD-Yaf45Cw")
 #define DB_URL F("power-iot-meter-default-rtdb.asia-southeast1.firebasedatabase.app")
 #define EMAIL_DOM "@gmail.com"
 #define CONTROL_TOPIC "controls"
 #define UPDATE_DURATION 10000U // ms
+#define UID_PATH "/fbuid"
 
 class FirebaseHandler
 {
@@ -19,6 +21,7 @@ class FirebaseHandler
     FirebaseData __stream;
     bool __first_init = false;
     uint32_t __last = 0;
+    fs::SPIFFSFS filesystem;
 
     void init_firebase_credentials()
     {
@@ -95,9 +98,24 @@ public:
     String chipId;
     bool isConnected;
 
+    FirebaseHandler (fs::SPIFFSFS &filesystem)
+    {
+        this->filesystem = filesystem;
+    }
+
     bool firebase_connect()
     {
         isConnected = connect_firebase();
+        String uid = this->getUid();
+        uid.trim();
+        String prevUid = FileOperation::readFile(this->filesystem, UID_PATH);
+        prevUid.trim();
+        
+        if (prevUid != uid) // if doesn't match
+        {
+            // uid update
+            FileOperation::writeFile(this->filesystem, UID_PATH, uid);
+        }
         return isConnected;
     }
 
@@ -137,7 +155,13 @@ public:
 
     bool updateData(String topic, FirebaseJson *jsonObj)
     {
-        return Firebase.RTDB.setJSON(&__stream, topic, jsonObj);;
+        return Firebase.RTDB.setJSON(&__stream, topic, jsonObj);
+        ;
+    }
+
+    String getUid()
+    {
+        return __auth.token.uid.c_str();
     }
 };
 FirebaseHandler firebaseHandler;
