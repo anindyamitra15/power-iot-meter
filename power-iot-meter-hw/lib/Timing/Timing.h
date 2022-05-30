@@ -21,8 +21,8 @@
 
 #define NTP_SERVER "pool.ntp.org"
 
-const long gmtOffset_sec = 0;
-const int daylightOffset_sec = 3600;
+const long gmtOffset_sec = 19800; // +5:30 hrs
+const int daylightOffset_sec = 0;
 // tm time;
 
 void printLocalTime()
