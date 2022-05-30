@@ -25,7 +25,7 @@ void fetchSensorData(packet_t *data)
 
 void fetchSensorDataTest(packet_t *data)
 {
-    data->max_peak_volt = 350;
+    data->max_peak_volt = 35.0;
     data->current_rms = 5.0;
     data->voltage_rms = 220.0;
     data->apparent_power = data->voltage_rms * data->current_rms;

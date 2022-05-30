@@ -4,6 +4,7 @@
 #include <MinimalWifiManager.h>
 #include <FirebaseHandler.h>
 #include <HardwareProp.h>
+#include <Timing.h>
 
 void fetchDataFromFirebase();
 void pushDataToFirebase();
@@ -23,6 +24,8 @@ void setup()
   wifi.begin(&server, SPIFFS);
   // // wifi.resetSettings();
   wifi.autoConnect();
+  set_time_from_ntp();
+  printLocalTime();
   firebaseHandler.begin(SPIFFS);
   firebaseHandler.firebase_connect();
   fetchDataFromFirebase();
@@ -36,6 +39,9 @@ void setup()
 void loop()
 {
   wifi.loop();
+  // printLocalTime();
+  Serial.println(get_timestamp());
+  delay(1000);
 }
 
 void fetchDataFromFirebase()
