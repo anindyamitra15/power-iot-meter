@@ -31,7 +31,9 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss",
+              "node_modules/firebaseui/dist/firebaseui.css"
             ],
             "scripts": []
           },
@@ -99,9 +101,21 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "./node_modules/@angular/material/prebuilt-themes/indigo-pink.css",
+              "src/styles.scss",
+              "node_modules/firebaseui/dist/firebaseui.css"
             ],
             "scripts": []
+          }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {
+            "prerender": false,
+            "ssr": false,
+            "browserTarget": "power-iot-meter-fe:build:production",
+            "firebaseProject": "power-iot-meter",
+            "firebaseHostingSite": "power-iot-meter"
           }
         }
       }
