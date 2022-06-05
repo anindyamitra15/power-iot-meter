@@ -1,18 +1,9 @@
-<div *ngIf="isSignedIn">Navbar</div>
-<!-- <firebase-ui -->
+<app-nav *ngIf="isSignedIn" (LogOutClick)="signOut()"></app-nav>
 <router-outlet *ngIf="isSignedIn"></router-outlet>
-<div *ngIf="isSignedIn">Footer</div>
+<app-footer *ngIf="isSignedIn"></app-footer>
 
 <firebase-ui
   (signInSuccessWithAuthResult)="successCallback($event)"
   (signInFailure)="errorCallback($event)"
   (uiShown)="uiShownCallback()"
 ></firebase-ui>
-
-<button mat-fab color="primary" *ngIf="isSignedIn" (click)="signOut()">
-  <mat-icon>logout</mat-icon>
-</button>
-
-<!-- <button mat-fab color="primary" aria-label="Example icon button with a delete icon">
-  <mat-icon>delete</mat-icon>
-</button> -->

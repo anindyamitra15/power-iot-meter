@@ -1,3 +1,4 @@
+import { SharedModule } from './../../shared/shared.module';
 import { RouterModule } from '@angular/router';
 import { DashboardComponent } from './../../pages/dashboard/dashboard.component';
 import { MainComponent } from './main.component';
@@ -25,7 +26,7 @@ const firebaseUiAuthConfig = {
 @NgModule({
   declarations: [
     MainComponent,
-    DashboardComponent,
+    DashboardComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +36,8 @@ const firebaseUiAuthConfig = {
     provideAuth(() => getAuth()),
     AngularFireDatabaseModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    SharedModule
   ]
 })
 export class MainModule { }
