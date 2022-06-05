@@ -11,6 +11,7 @@ import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireDatabaseModule } from '@angular/fire/compat/database';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import {MatCardModule} from '@angular/material/card';
 
 const firebaseUiAuthConfig = {
   signInFlow: 'popup',
@@ -37,7 +38,8 @@ const firebaseUiAuthConfig = {
     AngularFireDatabaseModule,
     MatButtonModule,
     MatIconModule,
-    SharedModule
+    SharedModule,
+    MatCardModule
   ]
 })
 export class MainModule { }

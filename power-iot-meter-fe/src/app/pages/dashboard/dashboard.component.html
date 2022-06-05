@@ -1,1 +1,30 @@
-<p>dashboard works!</p>
+<div class="container">
+  <mat-card mat-elevation-z8>Current: {{ dummy.current_rms }}A</mat-card>
+  <mat-card mat-elevation-z8>Voltage: {{ dummy.voltage_rms }}V AC</mat-card>
+  <mat-card mat-elevation-z8
+    >Power:
+    {{
+      dummy.active_power > 1000
+        ? dummy.active_power / 1000 + "K"
+        : dummy.active_power
+    }}W</mat-card
+  >
+  <mat-card mat-elevation-z8>Energy: {{ dummy.energy_consumed }}KWh</mat-card>
+  <mat-card mat-elevation-z8>Estimated Bill: ₹{{ getBill() }}</mat-card>
+  <mat-card mat-elevation-z8>
+    <p>Power Outage Logs:</p>
+    <table class="power-outage-table">
+      <tr>
+        <th>SL.</th>
+        <th>Start Time</th>
+        <th>End Time</th>
+      </tr>
+      <tr *ngFor="let outage of dummy.power_outage | keyvalue; let i = index">
+        <td>{{ i }}</td>
+        <td>{{ outage.key }}</td>
+        <td>{{ outage.value }}</td>
+      </tr>
+    </table>
+  </mat-card>
+</div>
+<div class="spacer"></div>
