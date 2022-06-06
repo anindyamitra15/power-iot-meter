@@ -9,7 +9,7 @@
         : dummy.active_power
     }}W</mat-card
   >
-  <mat-card mat-elevation-z8>Energy: {{ dummy.energy_consumed }}KWh</mat-card>
+  <mat-card mat-elevation-z8>Energy: {{ dummy.total_energy }}KWh</mat-card>
   <mat-card mat-elevation-z8>Estimated Bill: ₹{{ getBill() }}</mat-card>
   <mat-card mat-elevation-z8>
     <p>Power Outage Logs:</p>
@@ -19,8 +19,8 @@
         <th>Start Time</th>
         <th>End Time</th>
       </tr>
-      <tr *ngFor="let outage of dummy.power_outage | keyvalue; let i = index">
-        <td>{{ i }}</td>
+      <tr *ngFor="let outage of dummy.power_outages | keyvalue; let i = index">
+        <td>{{ i+1 }}</td>
         <td>{{ outage.key }}</td>
         <td>{{ outage.value }}</td>
       </tr>
