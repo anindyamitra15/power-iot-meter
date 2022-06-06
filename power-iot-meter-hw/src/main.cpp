@@ -3,7 +3,8 @@
 #include <SPIFFS.h>
 #include <MinimalWifiManager.h>
 #include <FirebaseHandler.h>
-#include <HardwareProp.h>
+#include <HardwarePropRaw.h>
+// #include <HardwarePropModule.h>
 #include <Timing.h>
 
 void fetchDataFromFirebase();
@@ -39,9 +40,10 @@ void setup()
 void loop()
 {
   wifi.loop();
+  //fe
   // printLocalTime();
-  Serial.println(get_timestamp());
-  delay(1000);
+  // Serial.println(get_timestamp());
+  // delay(1000);
 }
 
 void fetchDataFromFirebase()

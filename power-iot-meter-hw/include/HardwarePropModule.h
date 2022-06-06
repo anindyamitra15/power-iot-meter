@@ -1,5 +1,15 @@
-#ifndef __HardwareProp_H__
-#define __HardwareProp_H__
+/**
+ * @file HardwarePropModule.h
+ * @author @anubhav666 @arnabdas01
+ * @brief This will use PZEM004T module and UART
+ * @version 0.1
+ * @date 2022-06-06
+ * 
+ * @copyright Copyright (c) 2022
+ * 
+ */
+#ifndef __HardwarePropModule_H__
+#define __HardwarePropModule_H__
 #include "Arduino.h"
 #include "util.h"
 
