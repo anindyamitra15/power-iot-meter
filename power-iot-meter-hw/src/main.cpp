@@ -42,8 +42,8 @@ void loop()
   wifi.loop();
   //fe
   // printLocalTime();
-  // Serial.println(get_timestamp());
-  // delay(1000);
+  Serial.println(get_timestamp());
+  delay(1000);
 }
 
 void fetchDataFromFirebase()
@@ -60,7 +60,7 @@ void fetchDataFromFirebase()
   // json.setJsonData(data.c_str());
 }
 
-void pushDataToFirebase()
+void pushStatsToFirebase()
 {
   FirebaseJson json;
   //prepare to send all the data

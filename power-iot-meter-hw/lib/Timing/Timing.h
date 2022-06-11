@@ -76,7 +76,8 @@ String get_timestamp()
         return "";
     }
     char buffer[80];
-    strftime (buffer, 80, "%A, %B %d %Y %H:%M:%S", &timeinfo);
+    //YYYY-MM-DD HH:MM
+    strftime (buffer, 80, "%Y-%m-%d %H:%M", &timeinfo);
     return buffer;
 }
 
