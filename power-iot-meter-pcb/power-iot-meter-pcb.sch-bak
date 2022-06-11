@@ -368,13 +368,13 @@ Wire Wire Line
 $Comp
 L Connector:Screw_Terminal_01x02 J4
 U 1 1 62AB7B35
-P 2700 6900
-F 0 "J4" H 2618 7117 50  0000 C CNN
-F 1 "AC Voltage Sensor" H 2618 7026 50  0000 C CNN
-F 2 "Connector_Wire:SolderWire-0.5sqmm_1x02_P4.6mm_D0.9mm_OD2.1mm_Relief" H 2700 6900 50  0001 C CNN
-F 3 "~" H 2700 6900 50  0001 C CNN
-	1    2700 6900
-	-1   0    0    -1  
+P 2700 7000
+F 0 "J4" H 2618 6675 50  0000 C CNN
+F 1 "AC Voltage Sensor" H 2618 6766 50  0000 C CNN
+F 2 "Connector_Wire:SolderWire-0.5sqmm_1x02_P4.6mm_D0.9mm_OD2.1mm_Relief" H 2700 7000 50  0001 C CNN
+F 3 "~" H 2700 7000 50  0001 C CNN
+	1    2700 7000
+	-1   0    0    1   
 $EndComp
 Wire Wire Line
 	3050 6900 2900 6900

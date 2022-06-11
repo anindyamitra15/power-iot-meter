@@ -4,14 +4,14 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title ""
-Date ""
-Rev ""
-Comp ""
-Comment1 ""
-Comment2 ""
-Comment3 ""
-Comment4 ""
+Title "power-iot-meter-prototype-board"
+Date "2022-06-12"
+Rev "V1"
+Comp "Kalyani Government Engineering College"
+Comment1 "Anindya Kanti Mitra"
+Comment2 "Arnab Das"
+Comment3 "Anubhav Dutta"
+Comment4 "Rishav Dutta"
 $EndDescr
 $Comp
 L HLK-5M05:HLK-5M05 PS1
