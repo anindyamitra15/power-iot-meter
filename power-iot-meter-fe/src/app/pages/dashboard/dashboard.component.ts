@@ -38,7 +38,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
               .object(this.deviceTopic)
               .valueChanges()
               .subscribe(data => {
-                this.dummy = data as Measurements;
+                this.dataObj = data as Measurements;
 
               });
           });
@@ -49,23 +49,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     //unsubscribe from DB
+    this.authState?.unsubscribe;
+    this.topicSub?.unsubscribe;
   }
 
-  dummy: Measurements = {
-    current_rms: 20.00,
-    active_power: 1401.30,
-    voltage_rms: 220.35,
-    total_energy: 57.25,
+  dataObj: Measurements = {
+    current_rms: 0,
+    active_power: 0,
+    voltage_rms: 0,
+    total_energy: 0,
+    timestamp: '0000-00-00 00:00',
     power_outages: {
-      "2020-05-13 15:30": "2020-05-13 15:30",
-      "2020-05-13 15:36": "2020-05-13 16:30",
-      "2020-05-13 15:37": "2020-05-13 17:30",
-      "2020-05-13 15:38": "2020-05-13 18:30",
+      "0000-00-00 00:01": "0000-00-00 00:00",
+      "0000-00-00 00:02": "0000-00-00 00:00",
+      "0000-00-00 00:03": "0000-00-00 00:00",
+      "0000-00-00 00:04": "0000-00-00 00:00",
     }
   }
   billRate: number = 6.00;
   getBill(): number {
-    return this.dummy.total_energy * this.billRate;
+    return this.dataObj.total_energy * this.billRate;
   }
 
 }

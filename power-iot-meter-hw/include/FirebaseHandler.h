@@ -16,6 +16,76 @@
 
 class FirebaseHandler
 {
+public:
+    String chipId;
+    bool isConnected;
+
+    void begin(fs::SPIFFSFS &filesystem)
+    {
+        this->filesystem = filesystem;
+    }
+
+    bool firebase_connect()
+    {
+        isConnected = connect_firebase();
+        String uid = this->getUid();
+        uid.trim();
+        String prevUid = FileOperation::readFile(this->filesystem, UID_PATH);
+        prevUid.trim();
+
+        if (prevUid != uid) // if doesn't match
+        {
+            // uid update
+            FileOperation::writeFile(this->filesystem, UID_PATH, uid);
+        }
+        return isConnected;
+    }
+
+    void firebase_listen(
+        FirebaseData::StreamEventCallback streamCallback,
+        FirebaseData::StreamTimeoutCallback streamTimeoutCallback)
+    {
+        __stream.setResponseSize(2048);
+        if (!Firebase.RTDB.beginStream(&__stream, CONTROL_TOPIC))
+        {
+            Serial.printf("sream begin error, %s\n\n", __stream.errorReason().c_str());
+            delay(5000);
+        }
+        Serial.println(F("Listening"));
+        Firebase.RTDB.setStreamCallback(&__stream, streamCallback, streamTimeoutCallback);
+    }
+
+    void firebase_loop()
+    {
+        isConnected = Firebase.isTokenExpired();
+        if (!isConnected)
+        {
+            connect_firebase();
+        }
+
+        if (millis() - __last > UPDATE_DURATION)
+        {
+            // TODO: updae packet from here
+            __last = millis();
+        }
+    }
+
+    String fetchData(String topic)
+    {
+        return Firebase.RTDB.getString<String>(&__stream, topic) ? __stream.to<String>() : __stream.errorReason().c_str(); // changes from getJSON and <FirebaseJson>
+    }
+
+    bool updateData(String topic, FirebaseJson *jsonObj)
+    {
+        return Firebase.RTDB.updateNode(&__stream, topic, jsonObj);
+    }
+
+    String getUid()
+    {
+        return __auth.token.uid.c_str();
+    }
+
+private:
     FirebaseConfig __config;
     FirebaseAuth __auth;
     FirebaseData __stream;
@@ -92,75 +162,6 @@ class FirebaseHandler
 
         Serial.println(F("User creation failed"));
         return false; // for recursive approach on the caller
-    }
-
-public:
-    String chipId;
-    bool isConnected;
-
-    void begin(fs::SPIFFSFS &filesystem)
-    {
-        this->filesystem = filesystem;
-    }
-
-    bool firebase_connect()
-    {
-        isConnected = connect_firebase();
-        String uid = this->getUid();
-        uid.trim();
-        String prevUid = FileOperation::readFile(this->filesystem, UID_PATH);
-        prevUid.trim();
-
-        if (prevUid != uid) // if doesn't match
-        {
-            // uid update
-            FileOperation::writeFile(this->filesystem, UID_PATH, uid);
-        }
-        return isConnected;
-    }
-
-    void firebase_listen(
-        FirebaseData::StreamEventCallback streamCallback,
-        FirebaseData::StreamTimeoutCallback streamTimeoutCallback)
-    {
-        __stream.setResponseSize(2048);
-        if (!Firebase.RTDB.beginStream(&__stream, CONTROL_TOPIC))
-        {
-            Serial.printf("sream begin error, %s\n\n", __stream.errorReason().c_str());
-            delay(5000);
-        }
-        Serial.println(F("Listening"));
-        Firebase.RTDB.setStreamCallback(&__stream, streamCallback, streamTimeoutCallback);
-    }
-
-    void firebase_loop()
-    {
-        isConnected = Firebase.isTokenExpired();
-        if (!isConnected)
-        {
-            connect_firebase();
-        }
-
-        if (millis() - __last > UPDATE_DURATION)
-        {
-            // TODO: updae packet from here
-            __last = millis();
-        }
-    }
-
-    String fetchData(String topic)
-    {
-        return Firebase.RTDB.getString<String>(&__stream, topic) ? __stream.to<String>() : __stream.errorReason().c_str();//changes from getJSON and <FirebaseJson>
-    }
-
-    bool updateData(String topic, FirebaseJson *jsonObj)
-    {
-        return Firebase.RTDB.setJSON(&__stream, topic, jsonObj);
-    }
-
-    String getUid()
-    {
-        return __auth.token.uid.c_str();
     }
 };
 FirebaseHandler firebaseHandler;

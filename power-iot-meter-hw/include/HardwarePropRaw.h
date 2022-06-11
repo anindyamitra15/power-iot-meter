@@ -4,9 +4,9 @@
  * @brief This will be measuring the voltage and current and deriving power from that
  * @version 0.1
  * @date 2022-06-06
- * 
+ *
  * @copyright Copyright (c) 2022
- * 
+ *
  */
 #ifndef __HardwarePropRaw_H__
 #define __HardwarePropRaw_H__
@@ -35,11 +35,13 @@ void fetchSensorData(packet_t *data)
 
 void fetchSensorDataTest(packet_t *data)
 {
-    data->max_peak_volt = 35.0;
-    data->current_rms = 5.0;
-    data->voltage_rms = 220.0;
+    data->max_peak_volt = 350.0;
+    data->current_rms = data->current_rms + 1.073;
+    if (data->current_rms > 20)
+        data->current_rms = 2;
+    data->voltage_rms = 220.0 + random(-300, 300) / 100.00;
     data->apparent_power = data->voltage_rms * data->current_rms;
-    data->real_power = data->apparent_power * POWER_FACTOR;
+    data->active_power = data->apparent_power * POWER_FACTOR;
 }
 
 #endif

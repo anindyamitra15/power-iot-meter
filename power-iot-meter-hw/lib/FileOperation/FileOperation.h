@@ -64,30 +64,34 @@ public:
 
     static String readFile(fs::FS &fs, const char *path)
     {
+#ifdef DEBUGGING
         Serial.printf("Reading file: %s\r\n", path);
-
+#endif
         File file = fs.open(path);
         if (!file || file.isDirectory())
         {
             Serial.println(F("Failed to open file for reading"));
             return String("");
         }
-
+#ifdef DEBUGGING
         Serial.println(F("File contains:"));
-
+#endif
         if (!file.available())
             return "";
 
         String acc = file.readString();
         file.close();
+#ifdef DEBUGGING
         Serial.println(acc);
+#endif
         return acc;
     }
 
     static void writeFile(fs::FS &fs, String path, String message)
     {
+#ifdef DEBUGGING
         Serial.printf("Writing file: %s\r\n", path.c_str());
-
+#endif
         File file = fs.open(path.c_str(), FILE_WRITE);
         if (!file)
         {
@@ -103,8 +107,9 @@ public:
 
     static void appendFile(fs::FS &fs, String path, String message)
     {
+#ifdef DEBUGGING
         Serial.printf("Appending to file: %s\r\n", path.c_str());
-
+#endif
         File file = fs.open(path.c_str(), FILE_APPEND);
         if (!file)
         {

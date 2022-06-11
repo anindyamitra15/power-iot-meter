@@ -1,15 +1,16 @@
 <div class="container">
-  <mat-card mat-elevation-z8>Current: {{ dummy.current_rms }}A</mat-card>
-  <mat-card mat-elevation-z8>Voltage: {{ dummy.voltage_rms }}V AC</mat-card>
+  Last updated on: {{ dataObj.timestamp }}
+  <mat-card mat-elevation-z8>Current: {{ dataObj.current_rms }}A</mat-card>
+  <mat-card mat-elevation-z8>Voltage: {{ dataObj.voltage_rms }}V AC</mat-card>
   <mat-card mat-elevation-z8
     >Power:
     {{
-      dummy.active_power > 1000
-        ? dummy.active_power / 1000 + "K"
-        : dummy.active_power
+      dataObj.active_power > 1000
+        ? dataObj.active_power / 1000 + "K"
+        : dataObj.active_power
     }}W</mat-card
   >
-  <mat-card mat-elevation-z8>Energy: {{ dummy.total_energy }}KWh</mat-card>
+  <mat-card mat-elevation-z8>Energy: {{ dataObj.total_energy }}KWh</mat-card>
   <mat-card mat-elevation-z8>Estimated Bill: ₹{{ getBill() }}</mat-card>
   <mat-card mat-elevation-z8>
     <p>Power Outage Logs:</p>
@@ -19,8 +20,10 @@
         <th>Start Time</th>
         <th>End Time</th>
       </tr>
-      <tr *ngFor="let outage of dummy.power_outages | keyvalue; let i = index">
-        <td>{{ i+1 }}</td>
+      <tr
+        *ngFor="let outage of dataObj.power_outages | keyvalue; let i = index"
+      >
+        <td>{{ i + 1 }}</td>
         <td>{{ outage.key }}</td>
         <td>{{ outage.value }}</td>
       </tr>

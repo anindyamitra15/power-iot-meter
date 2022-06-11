@@ -2,6 +2,9 @@
 #define _util_H_
 #include <Arduino.h>
 
+
+#define BEXT(a) a ? F("True") : F("False")
+
 uint32_t getChipId()
 {
 #ifdef ESP8266
@@ -16,22 +19,14 @@ uint32_t getChipId()
 #endif
 }
 
-typedef struct timestamp_t
-{
-    uint8_t hr;
-    uint8_t min;
-    uint8_t sec;
-    uint32_t ms;
-} timestamp_t;
-
 typedef struct packet_t
 {
     double apparent_power;
-    double real_power;
+    double active_power;
     double max_peak_volt;
     double voltage_rms;
     double current_rms;
-    timestamp_t time;
+    String timestamp;
 
 } packet_t;
 #endif

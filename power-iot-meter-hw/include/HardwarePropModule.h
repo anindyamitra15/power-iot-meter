@@ -39,7 +39,7 @@ void fetchSensorDataTest(packet_t *data)
     data->current_rms = 5.0;
     data->voltage_rms = 220.0;
     data->apparent_power = data->voltage_rms * data->current_rms;
-    data->real_power = data->apparent_power * POWER_FACTOR;
+    data->active_power = data->apparent_power * POWER_FACTOR;
 }
 
 #endif

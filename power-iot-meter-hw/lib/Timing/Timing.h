@@ -4,7 +4,7 @@
 
 /**
  * @file Timing.h
- * @author your name (you@domain.com)
+ * @author @anindyamitra15 (you@domain.com)
  * @brief
  * Fetch time from NTC, according to Timezone
  * Store time in internal RTC and tick
@@ -17,13 +17,53 @@
  *
  */
 
+#include <Arduino.h>
 #include "Time.h"
+#include "FileOperation.h"
 
 #define NTP_SERVER "pool.ntp.org"
+#define POWER_CUT "/lastPowerCut"
 
 const long gmtOffset_sec = 19800; // +5:30 hrs
 const int daylightOffset_sec = 0;
-// tm time;
+
+void printLocalTime();
+void set_time_from_ntp();
+String getTimestamp();
+void powerCutTimeStore(fs::SPIFFSFS &filesystem);
+String powerCutTimeFetch(fs::SPIFFSFS &filesystem);
+
+
+void set_time_from_ntp()
+{
+    configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
+    printLocalTime();
+}
+
+String getTimestamp()
+{
+    struct tm timeinfo;
+    if (!getLocalTime(&timeinfo))
+    {
+        Serial.println("Failed to obtain time");
+        return "";
+    }
+    char buffer[80];
+    //YYYY-MM-DD HH:MM
+    strftime (buffer, 80, "%Y-%m-%d %H:%M", &timeinfo);
+    return buffer;
+}
+
+void powerCutTimeStore(fs::SPIFFSFS &filesystem)
+{
+    String time = getTimestamp();
+    FileOperation::writeFile(filesystem, POWER_CUT, time);
+}
+
+String powerCutTimeFetch(fs::SPIFFSFS &filesystem)
+{
+    return FileOperation::readFile(filesystem, POWER_CUT);
+}
 
 void printLocalTime()
 {
@@ -59,26 +99,6 @@ void printLocalTime()
     strftime(timeWeekDay, 10, "%A", &timeinfo);
     Serial.println(timeWeekDay);
     Serial.println();
-}
-
-void set_time_from_ntp()
-{
-    configTime(gmtOffset_sec, daylightOffset_sec, NTP_SERVER);
-    printLocalTime();
-}
-
-String get_timestamp()
-{
-    struct tm timeinfo;
-    if (!getLocalTime(&timeinfo))
-    {
-        Serial.println("Failed to obtain time");
-        return "";
-    }
-    char buffer[80];
-    //YYYY-MM-DD HH:MM
-    strftime (buffer, 80, "%Y-%m-%d %H:%M", &timeinfo);
-    return buffer;
 }
 
 #endif
