@@ -4,8 +4,8 @@
 #include <MinimalWifiManager.h>
 #include <ArduinoJson.h>
 #include <FirebaseHandler.h>
-#include <HardwarePropRaw.h>
-// #include <HardwarePropModule.h>
+// #include <HardwarePropRaw.h>
+#include <HardwarePropModule.h>
 #include <Timing.h>
 
 // #define DEBUGGING
@@ -34,7 +34,7 @@ void setup()
   firebaseHandler.begin(SPIFFS);
   firebaseHandler.firebase_connect();
 
-  fetchSensorDataTest(&data); // updates the data struct
+  fetchSensorData(&data); // updates the data struct
 
   FileOperation::listDir(SPIFFS);
   Serial.println("Exiting setup()..");
@@ -55,7 +55,7 @@ void loop()
   SCHEDULE(true, 0, TSK1)
   {
     fetchEnergyFromFirebase();
-    fetchSensorDataTest(&data);
+    fetchSensorData(&data);
     pushStatsToFirebase();
     last_time[0] = millis();
   }
