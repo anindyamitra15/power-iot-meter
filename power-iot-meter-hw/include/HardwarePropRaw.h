@@ -12,25 +12,38 @@
 #define __HardwarePropRaw_H__
 #include "Arduino.h"
 #include "util.h"
+#include "ZMPT101B.h"
+#include "ACS712.h"
 
-#define POWER_FACTOR 0.8              // basically cos(36.8698)
-#define REACTIVE_POWER_MULTIPLIER 0.6 // basically sin(36.8698)
 /**
  * @brief Pin definitions
  * TODO: To be decided Later
  */
-#define CURRENT 0 // input pin
-#define VOLTAGE 0 // output pin
+#define VOLTAGE_PIN 36 // ANALOG PIN
+#define CURRENT_PIN 39 // ANALOG PIN
+
+#define POWER_FACTOR 0.8              // basically cos(36.8698)
+#define REACTIVE_POWER_MULTIPLIER 0.6 // basically sin(36.8698)
+
+ZMPT101B voltageSensor(VOLTAGE_PIN);
+ACS712 currentSensor(CURRENT_PIN, 5.0, 1023, 100);
 
 void attach()
 {
-    pinMode(CURRENT, INPUT);
-    pinMode(VOLTAGE, INPUT);
+    pinMode(VOLTAGE_PIN, INPUT);
+    pinMode(CURRENT_PIN, INPUT);
+    Serial.println("Calibrating... Ensure that no current flows through the sensor at this moment");
+    voltageSensor.calibrate();
+    currentSensor.autoMidPoint();
+    delay(100);
+    Serial.println("Done!");
 }
 
 void fetchSensorData(packet_t *data)
 {
     // FIXME: implementation required after deciding on the sensors
+    int mA = currentSensor.mA_AC();
+    Serial.println(mA);
 }
 
 void fetchSensorDataTest(packet_t *data)
