@@ -42,13 +42,10 @@ void attach()
 void fetchSensorData(packet_t *data)
 {
     // FIXME: implementation required after deciding on the sensors
-    int mA = currentSensor.mA_AC();
-    Serial.println(mA);
 }
 
 void fetchSensorDataTest(packet_t *data)
 {
-    data->max_peak_volt = 350.0;
     data->current_rms = data->current_rms + 1.073;
     if (data->current_rms > 20)
         data->current_rms = 2;

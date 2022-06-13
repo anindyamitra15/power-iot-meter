@@ -23,9 +23,11 @@ typedef struct packet_t
 {
     double apparent_power;
     double active_power;
-    double max_peak_volt;
     double voltage_rms;
     double current_rms;
+    double power_factor;
+    double frequency;
+    double energy;
     String timestamp;
 
 } packet_t;
