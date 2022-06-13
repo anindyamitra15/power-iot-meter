@@ -58,6 +58,8 @@ export class DashboardComponent implements OnInit, OnDestroy {
     active_power: 0,
     voltage_rms: 0,
     total_energy: 0,
+    frequency: 0,
+    power_factor: 1,
     timestamp: '0000-00-00 00:00',
     power_outages: {
       "0000-00-00 00:01": "0000-00-00 00:00",

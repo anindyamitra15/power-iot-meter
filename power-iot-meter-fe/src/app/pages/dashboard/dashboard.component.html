@@ -10,6 +10,8 @@
         : dataObj.active_power
     }}W</mat-card
   >
+  <mat-card mat-elevation-z8>Frequency: {{dataObj.frequency}}</mat-card>
+  <mat-card mat-elevation-z8>Power Factor: {{dataObj.power_factor}}</mat-card>
   <mat-card mat-elevation-z8>Energy: {{ dataObj.total_energy }}KWh</mat-card>
   <mat-card mat-elevation-z8>Estimated Bill: ₹{{ getBill() }}</mat-card>
   <mat-card mat-elevation-z8>
