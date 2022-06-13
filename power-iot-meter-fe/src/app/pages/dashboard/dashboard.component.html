@@ -1,21 +1,21 @@
 <div class="container">
   Last updated on: {{ dataObj.timestamp }}
-  <mat-card mat-elevation-z8>Current: {{ dataObj.current_rms }}A</mat-card>
-  <mat-card mat-elevation-z8>Voltage: {{ dataObj.voltage_rms }}V AC</mat-card>
+  <mat-card mat-elevation-z8><b>Current:</b> {{ dataObj.current_rms.toFixed(5) }}A</mat-card>
+  <mat-card mat-elevation-z8><b>Voltage:</b> {{ dataObj.voltage_rms.toFixed(5) }}V AC</mat-card>
   <mat-card mat-elevation-z8
-    >Power:
+    ><b>Power:</b>
     {{
       dataObj.active_power > 1000
-        ? dataObj.active_power / 1000 + "K"
-        : dataObj.active_power
+        ? (dataObj.active_power / 1000).toFixed(5) + "K"
+        : dataObj.active_power.toFixed(5)
     }}W</mat-card
   >
-  <mat-card mat-elevation-z8>Frequency: {{dataObj.frequency}}</mat-card>
-  <mat-card mat-elevation-z8>Power Factor: {{dataObj.power_factor}}</mat-card>
-  <mat-card mat-elevation-z8>Energy: {{ dataObj.total_energy }}KWh</mat-card>
-  <mat-card mat-elevation-z8>Estimated Bill: ₹{{ getBill() }}</mat-card>
+  <mat-card mat-elevation-z8><b>Frequency:</b> {{dataObj.frequency.toFixed(2)}}</mat-card>
+  <mat-card mat-elevation-z8><b>Power Factor:</b> {{ dataObj.power_factor.toFixed(2) }}</mat-card>
+  <mat-card mat-elevation-z8><b>Energy:</b> {{ dataObj.total_energy }}kWh</mat-card>
+  <mat-card mat-elevation-z8><b>Estimated Bill:</b> ₹ {{ getBill() }}</mat-card>
   <mat-card mat-elevation-z8>
-    <p>Power Outage Logs:</p>
+    <p><b>Power Outage Logs:</b></p>
     <table class="power-outage-table">
       <tr>
         <th>SL.</th>

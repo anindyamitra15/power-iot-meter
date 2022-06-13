@@ -11,7 +11,15 @@ mat-card {
 
 .power-outage-table {
   border: 1px solid black;
+  overflow-y: auto;
   td {
     border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+  }
+  th {
+    position: -webkit-sticky, sticky;
+    top: 0;
+    z-index: 1;
   }
 }
