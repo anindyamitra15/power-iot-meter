@@ -12,6 +12,7 @@ const TOPIC = '/users';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
+  precision: number = 3;
   authState?: Subscription;
   user: any;
   topicSub?: Subscription;
