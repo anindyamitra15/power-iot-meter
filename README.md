@@ -9,18 +9,18 @@ Here is the [documentation](https://docs.google.com/document/d/1lsBinQPk2TXrA8E3
   --- power-iot-meter-hw (the firmware sketch)
 ```
 
-## Tech Stack Used:
+## Tools used:
 - Angular
 - Platform IO
 - Espressif ESP32
 - Arduino Framework
 - Firebase RTDB
 - Firebase Auth
+- KiCAD
 
-## Languages Used: 
+## Tools/Languages Used: 
 - C/C++
-- Js/Ts
-
+- JS/TS
 
 ## Members:
 - @arnabdas01
