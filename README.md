@@ -1,6 +1,10 @@
 # power-iot-meter
-This is our mini project for 6th semester.
-Here is the [documentation](https://docs.google.com/document/d/1lsBinQPk2TXrA8E3_NlRT1Esq-xPcBFSQFjI79IAyAw/edit?usp=sharing).
+Client server model for real-time monitoring of power usage aimed to simplify and modernise power usage readings and subsequent billing.
+Server backend handled by Firebase and Frontend made as a dynamic web app with angular framework.
+
+Slideshow presentation of the project highlighting the prominent topics discussed is available [here](https://docs.google.com/presentation/d/1IoBsD3WG-SK9_eWFI1Uqt-yPBRw3dVxrFmFgWGnbJ7E/edit?usp=sharing)
+The [documentation](https://docs.google.com/document/d/1lsBinQPk2TXrA8E3_NlRT1Esq-xPcBFSQFjI79IAyAw/edit?usp=sharing) for the research conducted and subsequent issues addressed has been made available.
+Dataflow logic
 
 ## Folder Structure:
 ```
