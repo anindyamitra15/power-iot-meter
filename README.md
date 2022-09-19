@@ -7,7 +7,7 @@ Slideshow presentation of the project highlighting the prominent topics discusse
 The [documentation](https://docs.google.com/document/d/1lsBinQPk2TXrA8E3_NlRT1Esq-xPcBFSQFjI79IAyAw/edit?usp=sharing) for the research conducted and subsequent issues addressed has been made available.  
 [Dataflow logic](https://whimsical.com/data-flow-XnRbm9PbMYaVgHn5g6pd81) and [Firmware Algorithm Logic](https://whimsical.com/firmware-algorithm-PJ4HBDd6Cb4NwG5o3SaENn) flowcharts are also provided.
 Project Term Paper available [here](https://docs.google.com/document/d/1HhWOn-NgjPpBc6PuhfizeNlCIJG0mVvy1hvxCMSfRlQ/edit?usp=sharing).  
-Short Infographic video showcasing the project and primary discussion points is available [here](https://www.youtube.com/watch?v=jMkZ5F2Xh4k)
+Short Infographic video showcasing the project and primary discussion points is available [here](https://www.youtube.com/watch?v=jMkZ5F2Xh4k).
 
 ## Folder Structure:
 ```
