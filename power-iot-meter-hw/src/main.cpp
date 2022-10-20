@@ -5,17 +5,17 @@
 #include <ArduinoJson.h>
 #include <FirebaseHandler.h>
 #include <HardwarePropModule.h>
-#include <Timing.h>
 
 #define DEBUGGING
 
 #define SCHEDULE(and_logic, num, delay) \
   if (and_logic && (millis() - last_time[num] > delay))
-#define SCHEDULES 1
-#define TSK1 5000 // ms
+#define SCHEDULES 2
+#define TSK_FETCH 200 // ms
+#define TSK_SYNC 5000
 
 String fetchPowerOutagesFromFirebase();
-void pushStatsToFirebase();
+void pushStatsToFirebase(packet_t *);
 
 AsyncWebServer server(80);
 MinimalWifiManager wifi;
@@ -50,11 +50,40 @@ void loop()
    * push
    *
    */
-  SCHEDULE(true, 0, TSK1)
+  SCHEDULE(true, 0, TSK_FETCH)
   {
-    fetchSensorData(&data);
-    pushStatsToFirebase();
+    bool power_good = fetchSensorData(&data);
+    if (power_good)
+    {
+      if (power_cut_occurred)
+      {
+        Serial.println("Power restored...");
+        String end_time = getTimestamp();
+        String start_time = powerCutTimeFetch(SPIFFS);
+        FirebaseJson json;
+        json.setJsonData(fetchPowerOutagesFromFirebase());
+        json.add<String, String>(start_time, end_time);
+        firebaseHandler.updateData("/" + firebaseHandler.getUid() + "/power_outages", &json);
+        power_cut_occurred = false;
+      }
+    }
+    else
+    {
+      if (!power_cut_occurred)
+      {
+        Serial.println("Power cut occurred...");
+        powerCutTimeStore(SPIFFS);
+        power_cut_occurred = true;
+      }
+    }
     last_time[0] = millis();
+  }
+
+  SCHEDULE(true, 1, TSK_SYNC)
+  {
+    if(!power_cut_occurred)
+      pushStatsToFirebase(&data);
+    last_time[1] = millis();
   }
   // // on power cut
   // if (checkPowerCut() && !power_cut_occurred)
@@ -87,21 +116,20 @@ String fetchPowerOutagesFromFirebase()
   return power_outages;
 }
 
-void pushStatsToFirebase()
+void pushStatsToFirebase(packet_t *data)
 {
   FirebaseJson json;
   // prepare to send all the data
-  json.add<String, double>("apparent_power", data.apparent_power);
-  json.add<String, double>("active_power", data.active_power);
-  json.add<String, double>("voltage_rms", data.voltage_rms);
-  json.add<String, double>("current_rms", data.current_rms);
-  json.add<String, double>("power_factor", data.power_factor);
-  json.add<String, double>("frequency", data.frequency);
-  json.add<String, double>("total_energy", data.energy);
-  // add timestamp
-  data.timestamp = getTimestamp();
-  json.add<String, String>("timestamp", data.timestamp);
-  firebaseHandler.updateData("/" + firebaseHandler.getUid(), &json);
+  json.add<String, double>("apparent_power", data->apparent_power);
+  json.add<String, double>("active_power", data->active_power);
+  json.add<String, double>("voltage_rms", data->voltage_rms);
+  json.add<String, double>("current_rms", data->current_rms);
+  json.add<String, double>("power_factor", data->power_factor);
+  json.add<String, double>("frequency", data->frequency);
+  json.add<String, double>("total_energy", data->energy);
+  json.add<String, String>("timestamp", data->timestamp);
+  bool success = firebaseHandler.updateData("/" + firebaseHandler.getUid(), &json);
+  Serial.println(success);
 #ifdef DEBUGGING
   Serial.println(json.raw());
 #endif

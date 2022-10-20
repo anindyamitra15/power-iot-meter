@@ -13,6 +13,7 @@
 #include "Arduino.h"
 #include "util.h"
 #include "PZEM004Tv30.h"
+#include "Timing.h"
 
 /**
  * @brief Pin definitions
@@ -28,7 +29,6 @@
 #define CONSOLE_SERIAL Serial
 #define THRESHOLD_MAINS 80
 
-
 PZEM004Tv30 pzem(PZEM_SERIAL, PZEM_RX_PIN, PZEM_TX_PIN);
 
 void attach()
@@ -36,19 +36,35 @@ void attach()
     // pzem.resetEnergy();
 }
 
-void fetchSensorData(packet_t *data)
+bool fetchSensorData(packet_t *data)
 {
     // FIXME: detection of power down
-    data->current_rms = pzem.current();
     data->voltage_rms = pzem.voltage();
-    data->apparent_power = pzem.voltage() * pzem.current();
+    data->current_rms = pzem.current();
+    data->apparent_power = data->voltage_rms * data->current_rms;
     data->active_power = pzem.power();
     data->power_factor = pzem.pf();
     data->energy = pzem.energy();
     data->frequency = pzem.frequency();
+    // add timestamp
+    data->timestamp = getTimestamp();
+
+    if (isnan(data->voltage_rms) ||
+        isnan(data->current_rms) ||
+        isnan(data->active_power) ||
+        isnan(data->energy) ||
+        isnan(data->frequency) ||
+        isnan(data->power_factor))
+    {
+        return false;
+    }
+    else
+    {
+        return true;
+    }
 }
 
-void fetchSensorDataTest(packet_t *data)
+bool fetchSensorDataTest(packet_t *data)
 {
     data->current_rms = 5.0;
     data->voltage_rms = 220.0;
@@ -56,9 +72,11 @@ void fetchSensorDataTest(packet_t *data)
     data->active_power = data->apparent_power * 0.6;
     data->power_factor = 0.6;
     data->frequency = 50;
+    // add timestamp
+    data->timestamp = getTimestamp();
+
+    return true;
 }
-
-
 
 bool checkPowerCut()
 {

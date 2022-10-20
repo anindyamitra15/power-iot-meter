@@ -1,11 +1,7 @@
 {
     "files.associations": {
-        "*.tcc": "cpp",
-        "functional": "cpp",
-        "istream": "cpp",
-        "ostream": "cpp",
-        "array": "cpp",
-        "string": "cpp",
-        "string_view": "cpp"
+        "cmath": "cpp",
+        "numeric": "cpp",
+        "*.yml": "cpp"
     }
 }
